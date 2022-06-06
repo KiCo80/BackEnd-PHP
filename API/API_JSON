@@ -1,0 +1,60 @@
+https://infojegyzet.hu/webszerkesztes/php/restapi/
+
+
+JSon kód: {} között adatok vannak felsorolva.
+Pl:
+{"message":"https:\/\/images.dog.ceo\/breeds\/spaniel-welsh\/n02102177_3377.jpg","status":"success"}
+
+
+Kutyás forráskód:
+<?php
+		$fk = @fopen( "https://dog.ceo/api/breeds/image/random" , "r" ) ;
+		if($fk)
+		{
+			$json = fread( $fk , 8192 ) ; // itt nem használható a filesize függvény (mert külsős képről van szó), ezért írjuk be ezt a számot. Bármekkora szám írható.
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=right>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+?>
+
+
+json_decode ilyet ad vissza eredményül:
+
+stdClass Object
+(
+    [message] => https://images.dog.ceo/breeds/hound-afghan/n02088094_5150.jpg
+    [status] => success
+)
+
+
+Kliens oldali API: a felhasználó számára értelmezhető látvány, oldal. :)
+
+
+A böngészőben lévő cím végéről ha levesszük az api-t, akkor eljutunk a főoldalra, ahol megtaláljuk a dokumentációt. :)
+
+
+
+Az általunk felhasznált APi frissülésével frissül a weboldalunk is. :)
+
+
+API dolga: hogy JSon kódot adjon vissza.
+
+
+API paraméterezése: ?stops= 
+
+
+JSon hibaüzenet:
+{"statusCode":400,"message":["from must be a string","to must be a string"],"error":"Bad Request"}
+
+
+API végpont: az az url, amibe tudunk írni.
+
+
+! Vizsgán is: Az API-hoz tartozni kell egy dokumentációnak! - Ha kitöröljük a végéről az api-t, akkor a főoldalunkra kell, hogy kerüljön a felhasználó, ahol ott kell lennie a dokumentációnak. ! :)
