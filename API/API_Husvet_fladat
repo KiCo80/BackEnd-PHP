@@ -1,0 +1,78 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+
+if( !isset( $_GET['ev'] ))
+{
+$tomb = array( 'hiba' => "hiányos adatok" ,  'uzenet' => "megadandó paraméter: ev" ) ;
+}
+else
+{
+$ev = $_GET['ev'] ;
+$a= $ev%19;
+$b= $ev%4;
+$c= $ev%7;
+$d= ((19*$a)+24)%30;
+$e= ((2*$b)+(4*$c)+(6*$d)+5)%7;
+
+$h=22+$d+$e;
+
+if($h<=31){
+    $honap="március";    
+}
+else{
+    $honap="április";    
+}
+if ($honap=="március"){
+    $husvetvasarnapDatum = $h;    
+}
+else{
+    $husvetvasarnapDatum = $h-31;
+}
+
+$nagypentekDatum=$husvetvasarnapDatum-2;
+$husvethetfoDatum=$husvetvasarnapDatum+1;
+
+$husvetvasarnap="$honap".' '."$husvetvasarnapDatum";
+$nagypentek = "$honap".' '."$nagypentekDatum";
+$husvethetfo= "$honap".' '."$husvethetfoDatum";
+
+$punkosd=$h+49-31-30;
+
+if($punkosd<=31){
+    $punkosdHonap="május";
+}
+else{
+    $punkosdHonap="június";
+}
+
+if($punkosdHonap=="május"){
+    $punkosdvasarnapDatum=$punkosd;
+    $punkosdhetfoDatum=$punkosd+1;
+}
+else{
+    $punkosdvasarnapDatum=$punkosd-31;
+    $punkosdhetfoDatum=$punkosd-30;
+}
+$punkosdvasarnap="$punkosdHonap".' '."$punkosdvasarnapDatum";
+$punkosdhetfo="$punkosdHonap".' '."$punkosdhetfoDatum";
+
+/*
+Pünkösd = $h + 49 - 31 -30
+ha Pünkösd<=31, akkor május Pünkösdikén van.
+Különben június Pünkösdike-31-én van.
+*/
+
+$tomb = array(   'ev'               => $_GET['ev'] ,
+                 'nagypentek'       => $nagypentek ,
+                 'husvetvasarnap'   => $husvetvasarnap ,
+                 'husvethetfo'      => $husvethetfo  ,
+                 'punkosdvasarnap'  => $punkosdvasarnap    ,
+                 'punkosdhetfo'     => $punkosdhetfo
+             ) ;
+}
+
+$json = json_encode( $tomb , JSON_UNESCAPED_UNICODE ) ;
+
+print $json ;
+
+?>
