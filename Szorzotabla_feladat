@@ -1,0 +1,38 @@
+<table border=1>
+
+<style>
+	table{
+		border-collapse: collapse;
+		border-color: lightgreen;
+		color: lightgreen;
+		background-color: black;
+		text-align: center;
+		font-family: brush script mt;
+		font-weight: bold;
+		text-shadow: 3px 3px 3px #ababab;
+	}
+
+	td{
+		padding:3px;
+	}
+	
+</style>
+
+<?php
+	if (isset($_GET['x'])) $x=$_GET['x'];
+	
+	else $x=20;
+	
+	
+	if($x>40) $x=40;
+	for ($i=1; $i<=$x; $i++)
+	{
+		print"<tr>";
+		for ($j=1; $j<=$x; $j++)  
+		{
+			print"<td>".$i*$j."</td>";
+		}
+		print"</tr>";
+	}
+
+?>
