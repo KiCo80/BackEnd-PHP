@@ -77,3 +77,94 @@ index3.php:
 
 <!-- ?a=120&b=60 ez kerül be a címsorba kiegészítésnek-->
 
+
+
+Domain bejegyzésének ellenőrzése:
+
+checkdnsrr
+
+
+Aposztróf, idézőjel, dőlt aposztróf:
+
+html-ben:
+	inkább ''-ot használjunk!
+
+MySQL-ben:
+	`` - a tábla elnevezésében a szavak összetartozását jelzi
+
+
+
+
+Adatbáziskezeléshez függvények:
+
+Adatbázis kezelő függvények:
+
+
+Adatbázishoz kapcsolódás:
+	mysqli_connect
+
+Adatbázisból lekérdezés:
+	mysqli_query
+
+Adatbázis kapcsolat bezárása:
+	mysqli_close
+
+
+
+FILE műveletek:
+
+php manualban, függvényeket beírva, minden látszik.
+php manual-ban a description részben lévő zöld színű szöveg a típus.
+
+File műveletek:
+
+fopen
+
+fwrite
+
+fread
+
+fclose
+
+
+
+Használandó paraméterek:
+
+r - olvasásra
+
+w - felülírásra
+
+a - hozzáadásra
+
+
+
+fopen visszaadot értéke: resource vagy false.
+
+1 karakter = 1 byte (ahány karakter, annyi byte)
+
+időzóna beállítása:
+
+date_default_timezone_set("Europe/Budapest");
+
+
+
+Session: böngésző megnyitásától a bezárásáig terjedő időszak (munkamenet)
+
+
+$_SESSION:  (a 4. szuperglobális változónk) munkamenet kezelésére szolgál
+
+!!!A legeslegelső sorban kell lennie!!! Üres sor sem lehet előtte!!!
+
+
+Első session id-m: 0u8nbqengqmm7rr0gr6gaubknf :)
+
+A server ezen a néven fog nyilvántartani.
+
+
+Megcsináljuk adatbázisban is!!! Otthon az encegem-ben létrehozni latogatok táblát!
+
+
+
+
+
+
