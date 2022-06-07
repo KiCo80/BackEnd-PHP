@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+	</head>
+
+	<style>
+		
+		body{
+			margin: 0; 
+		}
+
+		div{
+			border: solid 1px grey;
+			padding: 12px;
+		}	
+		div#cimsor{
+			background-color: grey;
+			color: lime;
+		}
+		div#menu, div#lablec{
+			background-color: darkolivegreen;
+			color: #FFF;
+			padding: 0 36px;
+		}
+		
+		div#urlap{
+			background-color: grey;
+			color		: white;
+            padding: 10px;
+		}
+
+		div#gomb{
+			border: none;
+			background-color: grey;
+		}
+        input{
+            margin-top: 5px;
+        	}
+
+		input[type=submit]{
+			background-color: lime;
+			color: black;
+			border-radius: 5px;
+		}
+		
+	</style>
+
+	<body>
+
+		<div id="cimsor">
+			<h1>Regisztrációs űrlap</h1>
+		</div>
+
+		<div id="urlap">
+            <form method="post" name="urlap">
+                Vezetéknév és keresztnév: <input type="text" name="veznev" disabled> <input type="text" name="kernev" disabled><br>
+                Nem (férfi/nő): <input type="text" name="nem" disabled><br>
+                Születési dátum: <input type="text" name="szulDatum" disabled><br>
+                Lakhely (ország és város): <input type="text" name="orszag" disabled> <input type="text" name="varos" disabled><br>
+                E-mail cím: <input type="email" name="email" disabled><br> 
+                Telefonszám: <input type="phonenumber" name="telefonszam" disabled><br>
+                Választott felhasználónév: <input type="text" name="felhasznalonev" disabled><br>
+                Választott belépési jelszó: <input type="text" name="jelszo" disabled><br>
+                Profilkép: <div id="fenykep">xxx</div>
+            </form>
+        </div>
+
+        <div id="gomb">
+			<h2>Nyomd meg a gombot az űrlap kitöltéséhez!</h2>
+            <input type="submit" value="Tesztadatok feltöltése" onclick="feltolt(); szinez()">
+        </div>
+<pre>
+<?php
+
+	$randomUser = @fopen("https://randomuser.me/api/" , "r");
+
+    	$json = fread($randomUser , 8192) ; 
+		
+	fclose($randomUser) ;
+
+	$adat = json_decode($json);
+
+	$firstName = $adat->results[0]->name->first;
+	$lastName = $adat->results[0]->name->last;
+	$gender = $adat->results[0]->gender;
+    $dob = $adat->results[0]->dob->date;
+    $country = $adat->results[0]->location->country;
+	$city = $adat->results[0]->location->city;
+	$email = $adat->results[0]->email;
+	$phone = $adat->results[0]->phone.", mobil: ".$adat->results[0]->cell;
+	$username = $adat->results[0]->login->username;
+	$password = $adat->results[0]->login->password;
+    
+	$photo = $adat->results[0]->picture->medium;
+	
+?>	
+</pre>
+
+	<div style=' margin: 18px 0 18px 48px; font-family: Courier; color:#226;'>
+		<pre><?php print_r($adat); ?></pre>
+	</div>
+
+	<div id="lablec">
+		&copy; kico.hu, 2001-<?=@date("Y-m-d H:i:s");?>
+	</div>
+	
+	<script>
+		function feltolt(){
+			let veznev = document.querySelector("input[name='veznev']");
+			veznev.value = "<?php echo $firstName ?>";
+			let kernev = document.querySelector("input[name='kernev']");
+			kernev.value = "<?php echo $lastName ?>";
+			let nem = document.querySelector("input[name='nem']");
+			nem.value = "<?php echo $gender ?>";
+			let szulDatum = document.querySelector("input[name='szulDatum']");
+			szulDatum.value = "<?php echo $dob ?>";
+			let orszag = document.querySelector("input[name='orszag']");
+			orszag.value = "<?php echo $country ?>";
+			let varos = document.querySelector("input[name='varos']");
+			varos.value = "<?php echo $city ?>";
+			let email = document.querySelector("input[name='email']");
+			email.value = "<?php echo $email ?>";
+			let telefonszam = document.querySelector("input[name='telefonszam']");
+			telefonszam.value = "<?php echo $phone ?>";
+			let felhasznalonev = document.querySelector("input[name='felhasznalonev']");
+			felhasznalonev.value = "<?php echo $username ?>";
+			let jelszo = document.querySelector("input[name='jelszo']");
+			jelszo.value = "<?php echo $password ?>";
+			let fenykep = document.querySelector("input[name='fenykep']");
+			document.getElementById('fenykep').innerHTML = "<img src='<?=$adat->results[0]->picture->medium;?>' >";
+		}
+		
+		function szinez(){
+  			input[type='text'].style.backgroundColor = "lightgreen";
+   			input.style.color = "white";
+		} // ez sem működik valamiért
+	
+	</script>
+
+	</body>
+
+</html>
