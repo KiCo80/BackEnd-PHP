@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kryptovaluta árfolyamok</title>
+    <style>
+        h1{
+            text-align:         center;
+            color:              darkblue;
+        }
+
+        table {
+          font-family:          Arial, Helvetica, sans-serif;
+          border-collapse:      collapse;
+          width:                500px;
+          margin:               0 auto;
+        }
+        
+        td, th { 
+          border:               1px solid #ddd;
+          padding:              8px;
+        } 
+        
+        td:hover {
+            background-color:   blue;
+            color:              white;
+        }
+        
+        th{
+          padding-top:          12px;
+          padding-bottom:       12px;
+          text-align:           center;
+          background-color:     darkblue;
+          color:                lightgrey;
+        }
+
+        td#btc{
+            text-align:         center;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Kryptovaluta árfolyamok</h1>
+    
+<?php
+    $f = "https://api.coingecko.com/api/v3/exchange_rates";
+
+    $fp   = fopen( $f  , "r"  ) ;
+    $json = fread( $fp , 8192 ) ;
+    fclose( $fp ) ;
+
+    $adat = json_decode($json) ;
+
+    print_r($adat);
+
+    print("<table>");
+    print("<th>Kryptovaluta</th>");
+    print("<th>Érték</th>");
+    print("<th>Valuta</th>");
+        
+    print("<tr>");
+    print("<td id='btc' rowspan='9'>1 BTC</td>");
+    print("</tr>");
+    print("<tr>");
+    print("<td>".$adat->rates->eur->value."</td>");
+    print("<td>".$adat->rates->eur->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->usd->value."</td>");
+    print("<td>".$adat->rates->usd->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->gbp->value."</td>");
+    print("<td>".$adat->rates->gbp->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->chf->value."</td>");
+    print("<td>".$adat->rates->chf->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->hrk->value."</td>"); // nincs a json file-ban?!
+    print("<td>".$adat->rates->hrk->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->czk->value."</td>");
+    print("<td>".$adat->rates->czk->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->plz->value."</td>"); // nincs a json file-ban?!
+    print("<td>".$adat->rates->plz->name."</td>");
+    print("</tr>");
+
+    print("<tr>");
+    print("<td>".$adat->rates->ron->value."</td>"); // nincs a json file-ban?!
+    print("<td>".$adat->rates->ron->name."</td>");
+    print("</tr>");
+    
+?>
+
+    </body>
+</html>
