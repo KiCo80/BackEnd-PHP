@@ -62,8 +62,9 @@
 
         eso{
             display:        block;
-            width:          
+            width:          10px;
         }
+
     </style>
 
     <?php 
@@ -76,12 +77,14 @@
 
             date_default_timezone_set("Europe/Budapest"); // xampp-nál nem kell!
 
-            $ns=date("N", $adat->daily->data[$i]->time); // a dátum függvény kell, mer microsecundumban van megadva az idő az objektumban.  
+            $ns=date("N", $adat->daily->data[$i]->time); // a dátum függvény kell, mert microsecundumban van megadva az idő az objektumban.  
 
             $nap=array("", "H", "K", "Sze", "Cs", "P", "Szo", "V"); // létrehoztunk egy tömböt a hét napjainak, fel is töltöttük a hét napjaival, kivéve a 0. indexű elemet!
 
             $eso=$adat->daily->data[$i]->precipProbability*100; // itt a folytatás passz...
 
+            $fentimargo=;
+    
             print "<div class='napi'> $nap[$ns] <br> <meleg>$celsius</meleg> <br> <hideg>$celsiusMin</hideg><br><eso titel='$eso mm' style='margin-top:".$fentimargo."px; height:".(3*$eso)."px;'>$nbsp;'></eso></div>"; // HTML5-ben hozhatunk létre taget, pl: meleg, hideg, majd formázzuk őket - parasztos megoldás :)) Helyette lehet div-be tenni és id-t vagy class-t adni nekik
         }
     ?>
