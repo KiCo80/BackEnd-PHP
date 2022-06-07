@@ -1,0 +1,4 @@
+<?
+        $szaznapmulva = time() + 100*24*60*60;
+        print "100 nap múlva ".date("Y.m.d.", $szaznapmulva)." lesz." ;
+?>
