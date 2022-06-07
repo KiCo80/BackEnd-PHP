@@ -1,0 +1,68 @@
+API elkészítése azt jelenti, hogy csinálunk egy php file-t.
+
+API végpont első sora mindig:
+header('Content-Type: application/json; charset=utf-8');
+
+API végpont végére mindig odakerül (a print(json file) elé ):
+$json = json_encode( $tomb , JSON_UNESCAPED_UNICODE ) ; - ezzel a sorral állítjuk elő a json file-t, amit kiprintelünk
+
+API-nak akkor is json-t kell visszaadnia, ha hiba van! (mint a tti-s példában: !ISSET - ha nem tartalmaza/ha nincs benne)
+
+
+A holdfázisos fényképes rész ugyanúgy megoldható, mint a tti-nél a testképek. :)
+
+
+Itt a testtömeges API:
+
+<?php
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    if( !isset( $_GET['kg'] )  ||  !isset( $_GET['cm'] ) )
+    {
+	$tomb = array( 'hiba' => "hiányos adatok" ,  'uzenet' => "megadandó paraméterek: kg és cm" ) ;
+    }
+    else
+    {
+
+	$kg   = $_GET['kg'] ; - ha megvan a kg paraméter
+	$cm   = $_GET['cm'] ; - ha megvan a cm paraméter
+
+	$tti  = round( $kg/($cm/100)/($cm/100) , 2 ) ;
+
+	if( $tti < 18)
+	{
+		$minosítes = "sovány testalkat" ;
+		$testkep   = "https://infojegyzet.hu/webszerkesztes/javascript/testtomegindex/body_thin.gif" ;
+		$tobblet   =  0  ;
+	}
+	else if( $tti <= 25)
+	{
+		$minosítes = "normál testalkat" ;
+		$testkep   = "https://infojegyzet.hu/webszerkesztes/javascript/testtomegindex/body_correct.gif" ;
+		$tobblet   =  0  ;
+	}
+	else
+	{
+		$minosítes = "túlsúlyosság" ;
+		$testkep   = "https://infojegyzet.hu/webszerkesztes/javascript/testtomegindex/body_fat.gif" ;
+		$tobblet   =  ceil( $kg - 25 * ($cm/100) * ($cm/100) ) ;
+	}
+
+	$tomb = array(   'kg'        => $_GET['kg'] ,
+	                 'cm'        => $_GET['cm'] ,
+	                 'tti'       => $tti        ,
+	                 'minosites' => $minosítes  ,
+	                 'testkep'   => $testkep    ,
+	                 'tobblet'   => $tobblet
+	             ) ; - ezzel a tömbbel állítjuk elő a json file név-érték párjait. (passz, de vmi ilyesmi, hogy: Kliens-1, Server-2)
+
+    }
+
+    $json = json_encode( $tomb , JSON_UNESCAPED_UNICODE ) ;
+
+    print $json ;
+
+?>
+
+
