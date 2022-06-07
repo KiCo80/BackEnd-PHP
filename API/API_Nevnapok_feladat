@@ -1,0 +1,88 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+
+if( !isset( $_GET['nap'] ) || !isset( $_GET['nev'] )){
+    $tomb = array( 'hiba' => "hiányos adatok" ,  'uzenet' => "megadandó paraméter: dátum vagy név" ) ;
+}
+
+if(isset($_GET['nap']) && !isset($_GET['nev'])){
+
+if(strlen($_GET['nap'])==3 && ($_GET['nap'])[1]=="-" && !isset($_GET['nev'])){
+    $honapSzam=($_GET['nap'])[0];
+    $napSzam=($_GET['nap'])[2];    
+}
+else if(strlen($_GET['nap'])==5 && ($_GET['nap'])[2]=="-"  && !isset($_GET['nev'])){
+    $honapSzam=($_GET['nap'])[0].($_GET['nap'])[1];
+    $napSzam=($_GET['nap'])[3].($_GET['nap'])[4];
+}
+else if(strlen($_GET['nap'])==4  && !isset($_GET['nev'])){
+    if (($_GET['nap'])[1]=="-"){
+        $honapSzam=($_GET['nap'])[0];
+        $napSzam=($_GET['nap'])[2].($_GET['nap'])[3];
+    }
+    else if (($_GET['nap'])[2]=="-"){
+        $honapSzam=($_GET['nap'])[0].($_GET['nap'])[1];
+        $napSzam=($_GET['nap'])[3];
+    }
+}
+else{
+    $tomb = array( 'hiba' => "nem megfelelő dátum" ,  'uzenet' => "megfelelő dátumformátumot (nap=hónap-nap) adj meg " ) ;
+}
+
+$honapok=["hónap", "január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"];
+
+
+    $a=mysqli_connect("localhost", "root", "", "nevnapok");
+	
+    $tabla=mysqli_query($a, "SELECT `nev1`, `nev2` FROM `nevnap` WHERE `ho`='$honapSzam' AND `nap`='$napSzam'");
+
+    $sor = mysqli_fetch_array($tabla) ; // a találat sorát a $sor változóban tároljuk, tömbként, így már elérhetőek az elemei.
+
+    mysqli_close($a);
+
+
+    if($sor['nev2']==""){
+        $tomb = array(   'dátum'              => $honapok[$honapSzam]." ".$napSzam ,
+                 'nevnap1'            => $sor['nev1'],
+             ) ;
+    }
+    else{
+        $tomb = array(   'dátum'              => $honapok[$honapSzam]." ".$napSzam ,
+                 'nevnap1'            => $sor['nev1'],
+                 'nevnap2'            => $sor['nev2']
+             ) ;
+    }
+}
+
+
+if(isset($_GET['nev']) && !isset($_GET['nap'])){
+
+if( ( $_GET['nev'] )!=""){
+    $nev=( $_GET['nev'] );
+
+    $honapok=["hónap", "január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"];
+    
+    $a=mysqli_connect("localhost", "root", "", "nevnapok");
+	
+    $tabla=mysqli_query($a, "SELECT `ho`, `nap` FROM `nevnap` WHERE `nev1`='$nev' OR `nev2`='$nev'");
+
+    $sor = mysqli_fetch_array($tabla) ;
+
+    mysqli_close($a);
+    
+    $honapSzam=$sor['ho'];
+
+        $tomb = array(   'név'              => $nev ,
+                 'dátum'            => $honapok[$honapSzam]." ".$sor['nap']
+             ) ;
+}
+
+
+}
+
+$json = json_encode( $tomb , JSON_UNESCAPED_UNICODE ) ;
+
+print $json ;
+
+
+?>
