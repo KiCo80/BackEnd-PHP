@@ -1,0 +1,93 @@
+<?php
+        $fu   = @fopen( "https://infojegyzet.hu/webszerkesztes/php/restapi/idojaras/" , "r" ); // a @-cal az aktuális hibát tiltjuk le.
+
+        if ($fu){
+
+		    $json = "";
+		    while (!feof($fu))  $json .= fread($fu, 1024); // a "." miatt hozzáadódik a következő adat. Nagy mennyiségű adatnál ezt kell alkalmazni!
+
+		    fclose( $fu ) ;
+
+            $adat = json_decode( $json ) ;
+        }
+        else{
+            print "HIBA! Az API nem elérhető.";
+        }
+	?>
+    
+    <h1>48 órás időjárás előrejelzés</h1>
+
+    <?php
+
+    for($i=0; $i<=48; $i++){
+        $fahrenheit=$adat->hourly->data[$i]->temperature;
+        $celsius=round(($fahrenheit-32)/1.8); // round függvénnyel egészrészre kerekítünk.
+        print $celsius." "; // a nyíl operátor az objektumoknál használható, tömb esetében továbbra is a [].
+    }
+    ?>
+
+    <h1>7 napos időjárás előrejelzés</h1>
+
+    <style>
+
+    @media (orientation: landscape) { /* landscape - fekvőkép: monitor, laptop */
+        div.napi{
+            float:          left; /* emiatt egymás mellett jelennek meg az adatok */
+            width:          48px;
+            text-align:     center;
+            border:         solid 1px grey;
+            border-radius:  6px;
+            margin:         6px;
+        }
+    }
+    @media (orientation: portrait) { /* portrait - állókép: telefon, tablet
+    Emiatt egymás alatt helyezkednek el az elemek, ha kicsinyítjük a kijelző méretét */
+        div.napi{
+            /* a float: left hiáynzik a fentihez képest */
+            
+            width:          100%;
+            text-align:     center;
+            border:         solid 1px grey;
+            border-radius:  6px;
+            margin:         6px;
+        }
+    }
+        meleg{
+            color:          red;
+        }
+
+        hideg{
+            color:          blue;
+        }
+
+        eso{
+            display:        block;
+            width:          
+        }
+    </style>
+
+    <?php 
+        for($i=0; $i<=7; $i++){
+            $fahrenheit=$adat->daily->data[$i]->temperatureMax;
+            $celsius=round(($fahrenheit-32)/1.8);
+            
+            $fahrenheitMin=$adat->daily->data[$i]->temperatureMin;
+            $celsiusMin=round(($fahrenheitMin-32)/1.8);
+
+            date_default_timezone_set("Europe/Budapest"); // xampp-nál nem kell!
+
+            $ns=date("N", $adat->daily->data[$i]->time); // a dátum függvény kell, mer microsecundumban van megadva az idő az objektumban.  
+
+            $nap=array("", "H", "K", "Sze", "Cs", "P", "Szo", "V"); // létrehoztunk egy tömböt a hét napjainak, fel is töltöttük a hét napjaival, kivéve a 0. indexű elemet!
+
+            $eso=$adat->daily->data[$i]->precipProbability*100; // itt a folytatás passz...
+
+            print "<div class='napi'> $nap[$ns] <br> <meleg>$celsius</meleg> <br> <hideg>$celsiusMin</hideg><br><eso titel='$eso mm' style='margin-top:".$fentimargo."px; height:".(3*$eso)."px;'>$nbsp;'></eso></div>"; // HTML5-ben hozhatunk létre taget, pl: meleg, hideg, majd formázzuk őket - parasztos megoldás :)) Helyette lehet div-be tenni és id-t vagy class-t adni nekik
+        }
+    ?>
+
+    <hr style='clear:both'> <!-- clear:both - ha már volt balra jobbra igazítva, akkor erre már ne vonatkozzon. -->
+
+	<div style=' margin: 18px 0 18px 48px; font-family: Courier; color:#226;'>
+		<pre><?php print_r($adat); ?></pre>
+	</div>
