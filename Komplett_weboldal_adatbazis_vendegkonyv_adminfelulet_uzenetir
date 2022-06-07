@@ -1,0 +1,589 @@
+404.php FILE:
+
+
+<h2>404 - Hibaoldal</h2>
+
+<img src='404.png'>
+
+
+
+
+adbkapcsolat.php FILE:
+
+
+<?php
+
+    $adb=mysqli_connect("localhost", "root", "", "encegem");
+	
+    $ip=$_SERVER['REMOTE_ADDR'];
+
+?>
+
+
+
+
+elerhetoseg.php FILE:
+
+
+<h2>Elérhetőség</h2>
+
+<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d10798.394750420175!2d19.04909443446149!3d47.41976836676121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1shu!2shu!4v1645548725212!5m2!1shu!2shu" 
+width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+
+
+
+index.php FILE:
+
+
+<?php
+	session_start(); // ezzel jelezzük a server felé, h tartsa nyilván a munkamenetünket.
+	
+	$session=session_id();
+
+	//print session_id(); // ezzel kiírathatjuk a session azonosítónkat.
+	
+	include("adbkapcsolat.php");
+
+	mysqli_query($adb, "
+		INSERT INTO latogatok (lid, ldatum,   lip,   lsession, loldal)
+		VALUES               (NULL,  NOW(), '$ip', '$session', '$_SERVER[REQUEST_URI]')
+	
+	");
+
+
+?>
+
+<!DOCTYPE html>
+<html>
+	<head>
+	
+	</head>
+
+	<style> /* CSS felületet hozunk létre a formázáshoz */
+		
+		body{
+			margin: 0; /* ezzel a div-ek felkerültek teljesen a bal felső sarokba */
+		}
+
+		div{
+			border: solid 1px grey;
+			padding: 12px;
+		}	
+		div#cimsor{
+			background-color: #888;
+			color: white;
+		}
+		div#menu, div#lablec{
+			background-color: #AAA;
+			color: #FFF;
+			padding: 0 36px;
+		}
+		div#menu a{
+			/* display: block;  ezzel egymás alatt lesznek a menüpontok  */
+			display: inline-block;
+			width: 120px;
+			text-align: center;
+			font-weight: bold;
+			text-decoration: none;
+			color: #FFF;
+			padding: 12px;
+		}
+		div#menu a:hover{
+			background-color: #FFF;
+			color		: #888;
+		}
+
+
+
+	</style>
+
+	<body>
+
+		<div id="cimsor">
+			<h1>Komoly weboldal :)</h1>
+		</div>
+
+		<div id="menu">
+			<a href='./?p=aktual'>Aktualitások / Akciók</a>
+			<a href='./?p=szolg'>Szolgáltatások</a>
+			<a href='./?p=ref'>Referenciák</a>
+			<a href='./?p=gal'>Galéria</a>
+			<a href='./?p=eler'>Elérhetőségeink</a>
+			<a href='./?p=kapcs'>Kapcsolat</a>
+			<a href='./?p=vendegkonyv'>Vendégkönyv</a>
+			
+		</div>
+
+		<div id="tartalom">
+<?php
+	if (isset($_GET['p']))	$p=$_GET['p'];
+	else			$p="";	
+
+	if ($p=="")		print "<h2>Főoldal</h2>";
+	else
+	if ($p=="aktual")	print "<h2>Aktuális akcióink</h2>"; 
+	else
+	if ($p=="szolg")	print "<h2>Szolgáltatásaink</h2>";
+	else
+	if ($p=="ref")		print "<h2>Referenciák</h2>";
+	else
+	if ($p=="gal")		print "<h2>Galéria</h2>";
+	else
+	if ($p=="eler")		include("elerhetoseg.php");
+	else
+	if ($p=="kapcs")	include("kapcsolat.php");
+	else
+	if ($p=="vendegkonyv")	include("vendegkonyv.php");
+	else			include("404.php"); /* ezzel hívjuk meg a 404.php file-t, amit írtunk, az tartalmazza a képet */
+
+
+			
+?>
+
+		<iframe name='kisablak'></iframe>
+
+		</div>
+
+<?php
+
+	date_default_timezone_set("Europe/Budapest");
+
+	$filenev=date("ymd").".txt"; // ez lesz a file neve, kihagyhatjuk a kötőjelet is, mert ez nem megjelenítendő dátum.
+
+	if (file_exists($filenev)){
+		$fp=fopen("$filenev", "r"); // logikai file-t hozunk létre $fp néven, amit olvasni szeretnénk
+		$n=fread($fp, filesize($filenev)); // fp = file pointer - megnyitjuk olvasásra, már a fizikai file-t.
+		fclose($fp);
+	}
+	else{
+		$fp=fopen("$filenev", "w"); 
+		$n=fwrite($fp, 0);
+		fclose($fp);
+		$n=0;
+	}
+
+	if (!isset($_SESSION['teljesenmindegy'])){ // megnézzük, hogy van-e benne ilyen kifejezés
+	$n++; // $n értékét mindig megnöveljük egyel
+
+	$fp=fopen("$filenev", "w"); 
+		$n=fwrite($fp, $n);
+		fclose($fp);
+
+		$_SESSION['teljesenmindegy']='elnezestkerekhazakellmennem'; // változó egyenlő valamivel :)))
+	}
+	
+	print "Az oldalt $n látogató látta ma.";
+
+?>
+
+		<div id="lablec">
+			&copy; kico.hu, 2001-<?=@date("Y-m-d H:i:s");?>	<!-- Speciális karakter megjelenítése "&"-del kezdődik és ";"-vel végződik, köztük a megjelenítendő karakter kódja. -->
+		</div>					<!-- Ha gyorsan kell php kódot írni egy sorba, akkor: "<?=2022;?>" - itt a 2022 helyére megy a date() függvény. Mivel a date() függvény kimeneteli értéke string, ezért zárójelen belül időzőjelek közé tesszük a formátum paramétereit -->
+	
+	</body>
+
+</html>
+
+<?php
+	mysqli_close($adb);
+?>
+
+
+
+
+kapcsolat.php FILE:
+
+
+<h2>Írj nekünk!</h2>
+
+<form action='uzenetir.php' method='post' target='kisablak'>  <!-- kell egy uzenetir.php file-t csinálni -->
+
+<!-- a method alapból = "get"-tel, de ez nem jó, mert akkor a címsorban láthatóak az adatok. A "post" érték miatt nem lesz látható a címsorban -->
+
+Az email címed:	<input type='email' name='mailcim'><br>
+Üzenet témája:	<input type='text' name='targy'><br>
+Üzenet szövege:	<textarea name='szoveg'></textarea><br><br> <!-- textarea - több soros szövegbeviteli mező -->
+
+<input type='submit' value='Üzenet küldése'>
+
+</form>
+
+
+
+
+
+uzenetir.php FILE:
+
+
+<pre>				<!-- megjeleníti a sortöréseket -->
+<?php
+
+	print_r($_POST); 	/* a form mezőinek értékét látjuk */
+	
+	mail('ugyfelszolgalat@encegem.hu', $_POST['targy'], $_POST['szoveg'], "From".$_POST['mailcim']);			/* mail függvénnyel tudunk emailt küldeni, ha a serverünk kezel mailt. */
+				/*  A "From"-hoz konkatenáljuk a mailcímet. */				
+	
+/* EMAIL KÜLDÉSÉNEK FELTÉTELEI? HOGY NE MENJENEK KI ÜRES EMAILEK: */
+	
+	if($_POST['mailcim']=="")	die("<script> alert('Nem adtad meg az email címedet!')</script>");  /* die = olyan, mint a print, csak nem engedi tovább futni a programot.*/
+	
+/* ugyanezt tehetjük a többi paraméterrel: tárgy, szöveg, stb... */
+	
+	if($_POST['targy']=="")		die("<script> alert('Nincs tárgy!')</script>");
+	
+	if (strlen($_POST['szoveg'])<40) die("<script> alert('Kicsit hosszabbat írj!')</script>");  /* strlen = üzenet szövegének hossza, jelen esetben <40 */
+
+/* mail (); függvény - 5 paramétere van, ebből 3 kötelező => php manual => mail(), minden ott van róla */
+
+/*
+	mail("hr@encegem.hu",
+	     $_POST['targy'],
+	     $_POST['szoveg'],
+	     "From:".$_POST['mailcim']);  // mehetne egy sorba is, de tördelve jobban látjuk a függvény paramétereit.
+
+	mail($_POST['mailcim'],    // így a felhasználónak is elküldjük az üzenetet, tudni fogja, hogy mit írt. 
+	     "MÁSOLAT - ".$_POST['targy'],
+	     $_POST['szoveg'],
+	     "From:".$_POST['mailcim']);
+*/
+
+/* FENTI MÓDON NEM SZABAD EMAILT KÜLDENI, MERT HAMAR MEGTELIK A SERVER!!! */
+/* EZÉRT (VÁRÓLISTÁRA) ADATBÁZISBA KELL BELETENNI AZ EMAILEKET! */	
+
+
+/* ADATBÁZISOS RÉSZ: PHP manualban: 5 paraméter. A 2. a felhasználónév, a 3. a jelszó, itt üres*/
+	
+	$adb=mysqli_connect("localhost", "root", "", "encegem"); /* $adb változóba tároljuk el a kapcsolódás eredményét. */
+	
+	$ip=$_SERVER['REMOTE_ADDR']; // így kérdezzük le az ip címet, be is tesszük változóba
+
+	include("adbkapcsolat.php");
+
+	
+	mysqli_query($adb, "
+	
+			INSERT INTO emailek (eid,            efelado,          etargy,          eszoveg, eidopont,   eip, estatusz, ekomment) 
+			VALUES 		    (NULL, '$_POST[mailcim]', '$_POST[targy]', '$_POST[szoveg]',    NOW(), '$ip',       '',       '')
+			
+	 ");
+	/*
+	Fent: ezt az adatbázis felületről, a beszúrás fülnél üresen hagyva, majd mentés, és kiírja a parancsot, amit bemásolunk a php-be. CTRL+H-val kicseréljük üresre ezeket a dőlt aposztrófokat. Azért tesszük egymás alá a vesszőket, hogy lássuk, mi, mihez tartozik. A mailcim előtti és utáni aposztrófokat kivesszük, mert aposztróf közé írtuk be!
+	fenti két sort kimásoljuk, beillesztjük a MySQL-be. Ha zöld, akkor jó! Utána Műveletek => Truncate - kitöröl és lenulláz mindent.
+	*/
+	
+	mysqli_close($adb);
+
+
+
+
+	print " 
+		<script>
+			alert('Köszönjük üzenetedet!')
+			parent.location.href='./' /* ezzel visszaugrunk a főoldalra, a szülőoldalra. */
+		</script>
+	";
+
+?>
+</pre>
+
+
+<!-- szervíz funkció miatt nagyon hasznos, mindig így kell kezdeni!!! -->
+
+
+
+
+
+vendegkonyv.php FILE:
+
+
+<!DOCTYPE html>
+<head>
+</head>
+
+<style>
+    div.uzenet{
+        border:             solid 1px #004;
+        border-radius:      3px;
+        background-color:   #DDF;
+        color:              #004;
+        margin:             16px;
+        padding:            6px 12px;
+    }
+
+    div.uzenet span{
+        float:              right;
+    }
+
+    div.uzenet hr{
+        border-top:             dotted 1px #004;
+    }
+
+</style>
+
+<body>
+    
+    <form action='vendegkonyv_ir.php' method='post'       target='kisablak' style='margin-left:120px;'> 
+    
+        <h2>Vendégkönyv</h2>
+
+        Neved:<br>
+        <input type='text' name='nev' size=32><br><br>
+        Üzeneted:<br> 
+        <textarea name='szoveg' rows=8 cols=40></textarea><br><br> 
+
+        <input type='submit' value='Küldés'>
+
+    </form>
+
+<hr style='margin:24px 0;'>
+
+<?php
+
+    $tomb=[]; 
+
+    $fp=fopen("vendegkonyv.txt", "r");
+    while($sz=fgets($fp)) 
+    {
+        $tomb[]=$sz;
+    }
+    fclose($fp);
+    
+    $sorszam=count($tomb);
+
+    for($i=count($tomb)-1; $i>=0; $i--) 
+
+    {        
+        $sz=str_replace("\r\n", "<br>", $tomb[$i]); 
+
+        $sor=explode(";" , $sz); 
+
+        $sor[2]=str_replace("\\r\\n", "<br>", $sor[2]); // megkérdezni Tanár Úrtól a <br>-t, mert a replace miatt azt is kiírja, nem pedig sortörést csinál...
+        $sor[2]=str_replace(":)", "😊", $sor[2]);
+        $sor[2]=str_replace(":D", "😁", $sor[2]);
+        $sor[2]=str_replace(":P", "😋", $sor[2]);
+        $sor[2]=str_replace(";$", "🥴", $sor[2]);
+        $sor[2]=str_replace(":(", "🙁", $sor[2]);
+        $sor[2]=str_replace("B-)", "😎", $sor[2]);
+        $sor[2]=str_replace(":'(", "😭", $sor[2]);
+        $sor[2]=str_replace(":-*", "😘", $sor[2]);
+        $sor[2]=str_replace("<3", "❤", $sor[2]);
+        $sor[2]=str_replace( "<" , "&lt;" , $sor[2]);
+        //$sor[2]=str_replace( ">" , "&gt;" , $sor[2]);
+        $sor[2]=str_replace( "'" , "\'" , $sor[2]);
+       
+        
+        print "<div class='uzenet'> $sorszam."." <br> <span> $sor[0]</span> $sor[1] <hr> $sor[2] </div>";
+        $sorszam--;
+    }
+       
+?>
+
+</body>
+</html>
+<pre>				
+
+    
+// marque: jobbról balra átúszik a tartalom :) - hack :)
+    
+
+			
+
+
+
+
+vendegkonyv_ir.php FILE:
+
+
+<pre>				
+<?php
+
+    print_r($_POST); // ezzel kiíratjuk a "kisablak"-ba az adatokat.
+    
+    if(!file_exists("vendegkonyv.txt")){
+        $fp=fopen("vendegkonyv.txt", "w");
+        fclose($fp);
+    }
+    
+    if($_POST['nev']=="")       die("<script> alert('Kérlek, add meg a neved!') </script>");
+
+    if(strlen($_POST['szoveg'])<4)    die("<script> alert('Kérlek, hosszabb üzenetet írj!') </script>"); // megvizsgáljuk, hogy megvan-e minimum a 4 karakter hosszúságú üzenetszöveg.
+
+    $uzenet=str_replace("\r\n", "\\r\\n", $_POST['szoveg']); // str_replace: lecserélni karaktereket másra. 3 paramétere van: mit, mire, miben. \n\r = Enter jele
+
+    $beirando=date("y-m-d- H:i:s").";".$_POST['nev'].";".$uzenet. "\r\n"; // 3 adatot írunk bele, egymástól ";"-vel elválasztva. A \n\r-rel (Enterrel) zárjuk le az üzenetet.
+    
+    $fp=fopen("vendegkonyv.txt", "a"); // "a"-val hozzáfűzünk a file-unk tartalmához.
+    fwrite($fp, $beirando);
+    fclose($fp);
+
+    print "<script> alert('Köszönjük üzenetedet!') 
+            parent.location.href = parent.location.href
+            </script>";
+    // parent.location.href-fel oldalt frissítünk a vendégkönyvbe írás után
+
+?>
+</pre>
+
+
+
+
+ADMIN MAPPA FILE-JAI:
+
+emailek.php FILE:
+
+
+<style>
+    table{
+        background-color: lightgreen;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th{
+        padding: 5px;
+    }
+    td{
+        padding: 2px;
+    }
+</style>
+
+<?php
+
+    print("<table border=1>");
+    print("<th>Időpont</th>");
+    print("<th>Feladó</th>");
+    print("<th>Tárgy</th>");
+    print("<th>Üzenet szövege</th>");
+
+	$adb=mysqli_connect("localhost", "root", "", "encegem");
+	
+	$tabla=mysqli_query($adb, " SELECT * FROM emailek ORDER BY eidopont DESC");
+
+    //$sor=mysqli_fetch_array($tabla);    
+
+    while($sor = mysqli_fetch_array ($tabla)) 
+	{
+	
+    print ("<tr>");
+    print ("<td><b>$sor[eidopont]</b></td>");
+    print ("<td><b>$sor[efelado]</b></td>");
+    print("<td><u>$sor[etargy]</u></td>");
+    print("<td><b>$sor[eszoveg]</b></td>");
+    print ("</tr>");
+ 
+	}
+
+	mysqli_close($adb);
+
+?>
+
+
+
+
+index.php FILE:
+
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+    
+<style>
+		
+		body{
+			margin: 0; 
+		}
+
+		div{
+			padding: 12px;
+		}	
+		div#cimsor{
+			background-color: #888;
+			color: lime;
+		}
+		div#menu, div#lablec{
+			background-color: #AAA;
+			color: white;
+			padding: 0 36px;
+		}
+		div#menu a{
+			display: inline-block;
+			width: 120px;
+			text-align: center;
+			font-weight: bold;
+			text-decoration: none;
+			color: lightgreen;
+			padding: 12px;
+		}
+		div#menu a:hover{
+			background-color: lightgreen;
+			color		: #888;
+		}
+
+    </style>
+
+<body>
+    <div id="cimsor">
+        <h2>Admin felület</h2>
+    </div>
+
+    <div id="menu">
+			<a href='./?p=emailek'>Emailek</a>
+			<a href='./?p=latogatottsag'>Látogatottság</a>
+	</div>
+
+    <div id="tartalom">
+
+    <?php
+	    if (isset($_GET['p']))	    $p=$_GET['p'];
+	    else			            $p="";	
+        if ($p=="") 		        print "";
+	    else
+	    if ($p=="emailek")	        include("emailek.php"); 
+	    else
+	    if ($p=="latogatottsag")    include("latogatottsag.php");
+	    else			            include("404.php"); 		
+    ?>
+
+    </div>
+</body>
+
+</html>
+
+
+
+
+latogatottsag.php FILE:
+
+
+<?php
+
+	date_default_timezone_set("Europe/Budapest");
+
+	$filenev=date("ymd").".txt"; 
+
+	if (file_exists($filenev)){
+		$fp=fopen("$filenev", "r");
+		$n=fread($fp, filesize($filenev));
+		fclose($fp);
+	}
+	else{
+		$fp=fopen("$filenev", "w"); 
+		$n=fwrite($fp, 0);
+		fclose($fp);
+		$n=0;
+	}
+
+	if (!isset($_SESSION['teljesenmindegy'])){
+		$n++; 
+
+		$fp=fopen("$filenev", "w"); 
+			$n=fwrite($fp, $n);
+			fclose($fp);
+
+			$_SESSION['teljesenmindegy']='elnezestkerekhazakellmennem'; 
+	}
+	
+	print "Az oldalt $n látogató látta ma.";
+
+?>
