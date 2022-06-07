@@ -1,0 +1,34 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+
+if( !isset( $_GET['jel'] )){
+    $tomb = array( 'hiba' => "hiányos adatok" ,  'uzenet' => "megadandó paraméter: adoazonosito jel" ) ;
+}
+
+if(($_GET['jel'])[0]!=8 || strlen($_GET['jel'])!=10){
+    $tomb = array( 'hiba' => "nem megfelelő adóazonosító jel" ,  'uzenet' => "érvényes adóazonosító jelet adj meg" ) ;
+}
+else{
+$jel = $_GET['jel'] ;
+
+$elteltNapok=(($jel[1].$jel[2].$jel[3].$jel[4].$jel[5]));
+
+//nem sikerül a $jel[1:5] kiíratás. Megkérdezni, hogyan kell.
+
+$kezdoDatum=date_create("1867-01-01");
+
+$napokHozzaadva=date_add($kezdoDatum,date_interval_create_from_date_string("41366 days"));
+
+$szulDatum=date_format($napokHozzaadva,"Y.m.d.");
+
+$tomb = array(   'jel'              => $_GET['jel'] ,
+                 'szul_datum'       => $szulDatum ,
+                 'error'            => "0" ,
+             ) ;
+}
+
+$json = json_encode( $tomb , JSON_UNESCAPED_UNICODE ) ;
+
+print $json ;
+
+?>
