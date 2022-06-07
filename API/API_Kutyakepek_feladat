@@ -1,0 +1,346 @@
+404.php FILE:
+
+
+<h2>404 - Hibaoldal</h2>
+
+<img src='404.png'>
+
+
+
+
+index.php FILE:
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+	
+	</head>
+
+	<style>
+		
+		body{
+			margin: 0; 
+		}
+
+		div{
+			border: solid 1px grey;
+			padding: 12px;
+		}	
+		div#cimsor{
+			background-color: darkolivegreen;
+			color: white;
+		}
+		div#menu, div#lablec{
+			background-color: darkolivegreen;
+			color: #FFF;
+			padding: 0 36px;
+		}
+		div#menu a{
+			display: inline-block;
+			width: 120px;
+			text-align: center;
+			font-weight: bold;
+			text-decoration: none;
+			color: #FFF;
+			padding: 12px;
+		}
+		div#menu a:hover{
+			background-color: #FFF;
+			color		: #888;
+		}
+
+	</style>
+
+	<body>
+
+		<div id="cimsor">
+			<h1>Kutyafajták képei</h1>
+		</div>
+
+		<div id="menu">
+			<a href='./?p=pitbull'>Amerikai pit bull terrier</a>
+			<a href='./?p=akita'>Akita Inu</a>
+			<a href='./?p=boxer'>Boxer</a>
+			<a href='./?p=staffordshire'>Staffordshire bullterrier</a>
+			<a href='./?p=rottweiler'>Rottweiler</a>
+		</div>
+
+		<div id="tartalom">
+<?php
+	if (isset($_GET['p']))	$p=$_GET['p'];
+	else					$p="";	
+	if ($p=="")				print "<h2>Válassz egy fajtát a menüből!</h2>";
+	else
+	if ($p=="pitbull")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/pitbull/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="akita")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/akita/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="boxer")			
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/boxer/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="staffordshire")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/bullterrier-staffordshire/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="rottweiler")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/rottweiler/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+			
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else					include("404.php");
+			
+?>
+
+	</div>
+
+	<div id="lablec">
+		&copy; kico.hu, 2001-<?=@date("Y-m-d H:i:s");?>
+	</div>
+	
+	</body>
+
+</html>
+
+
+
+
+Másik megoldás elnevezve az oldalt:
+kutyakepek.php FILE:
+
+<!DOCTYPE html>
+<html>
+	<head>
+	
+	</head>
+
+	<style>
+		
+		body{
+			margin: 0; 
+		}
+
+		div{
+			border: solid 1px grey;
+			padding: 12px;
+		}	
+		div#cimsor{
+			background-color: darkolivegreen;
+			color: white;
+		}
+		div#menu, div#lablec{
+			background-color: darkolivegreen;
+			color: #FFF;
+			padding: 0 36px;
+		}
+		div#menu a{
+			display: inline-block;
+			width: 120px;
+			text-align: center;
+			font-weight: bold;
+			text-decoration: none;
+			color: #FFF;
+			padding: 12px;
+		}
+		div#menu a:hover{
+			background-color: #FFF;
+			color		: #888;
+		}
+
+	</style>
+
+	<body>
+
+		<div id="cimsor">
+			<h1>Kutyafajták képei</h1>
+		</div>
+
+		<div id="menu">
+			<a href='./kutyakepek.php?p=pitbull'>Amerikai pit bull terrier</a>
+			<a href='./kutyakepek.php?p=akita'>Akita Inu</a>
+			<a href='./kutyakepek.php?p=boxer'>Boxer</a>
+			<a href='./kutyakepek.php?p=staffordshire'>Staffordshire bullterrier</a>
+			<a href='./kutyakepek.php?p=rottweiler'>Rottweiler</a>
+		</div>
+
+		<div id="tartalom">
+<?php
+	if (isset($_GET['p']))	$p=$_GET['p'];
+	else					$p="";	
+	if ($p=="")				print "<h2>Válassz egy fajtát a menüből!</h2>";
+	else
+	if ($p=="pitbull")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/pitbull/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="akita")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/akita/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="boxer")			
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/boxer/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="staffordshire")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/staffordshire/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else
+	if ($p=="rottweiler")
+	{
+		$fk = @fopen( "https://dog.ceo/api/breed/rottweiler/images/random" , "r" ) ;
+		if($fk) 
+		{
+			$json = fread( $fk , 8192 ) ; 
+			fclose( $fk ) ;
+
+			$adat = json_decode( $json ) ;
+			
+			print " <img src='$adat->message' title='$adat->message' align=center>";
+		}
+		else
+		{
+			print "A dog.ceo API-ja jelenleg nem működik." ;
+		}
+	}
+	else					include("404.php");
+			
+?>
+
+	</div>
+
+	<div id="lablec">
+		&copy; kico.hu, 2001-<?=@date("Y-m-d H:i:s");?>
+	</div>
+	
+	</body>
+
+</html>
